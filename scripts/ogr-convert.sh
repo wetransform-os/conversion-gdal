@@ -7,16 +7,17 @@ CMDARG_ERROR_BEHAVIOR=exit
 cmdarg_info "header" "Helper script for ogr2ogr file conversion"
 cmdarg_info "author" "Simon Templer <simon@wetransform.to>"
 cmdarg_info "copyright" "(C) 2016 wetransform GmbH"
-cmdarg 'i:' 'in' 'Source file location'
+cmdarg 'i:' 'source' 'Source file location (http/https URL or local file path)'
 cmdarg 'n?' 'source-name' 'If input is a URL, provide a name for the downloaded file, if the format detection relies on the file extension'
-cmdarg 'o:' 'out' 'Path to target file'
+cmdarg 'd?' 'target-dir' 'Target directory where to put files'
+cmdarg 'o:' 'target-name' 'The main target file name (file name only)'
 cmdarg 'f:' 'target-format' 'OGR target format'
 cmdarg 's?' 'source-srs' 'Override source SRS'
 cmdarg 't?' 'target-srs' 'Provide target SRS to convert to'
 cmdarg_parse "$@"
 
 web_regex='^(https?)://.+$'
-source_loc=${cmdarg_cfg['in']}
+source_loc=${cmdarg_cfg['source']}
 
 echo "Source file location: $source_loc"
 
@@ -26,7 +27,7 @@ then
   source_file=${cmdarg_cfg['source-name']}
   if [ -z "$source_file" ]; then
     # as fallback use filename w/o extension
-    source_file="convert-in"
+    source_file="sourcefile"
   fi
   mkdir "${DATA_DIR}/source" || true
   echo "Downloading file..."
@@ -55,6 +56,13 @@ if [ "$source_mime" == "application/zip" ]; then
   source_loc="${DATA_DIR}/source-zip"
 fi
 
+# create target directory
+target_dir=${cmdarg_cfg['target-dir']}
+if [ -z "$target_dir" ]; then
+  target_dir="${DATA_DIR}/target"
+fi
+mkdir -p $target_dir || true
+
 # build ogr2ogr comman
 convert_cmd="time ogr2ogr"
 
@@ -76,7 +84,7 @@ if [ -n "$target_srs" ]; then
   convert_cmd="$convert_cmd -t_srs \"$target_srs\""
 fi
 
-target_loc=${cmdarg_cfg['out']}
+target_loc="$target_dir/${cmdarg_cfg['target-name']}"
 target_format=${cmdarg_cfg['target-format']}
 convert_cmd="$convert_cmd -f \"$target_format\" \"$target_loc\" \"$source_loc\""
 
