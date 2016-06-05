@@ -8,7 +8,7 @@ cmdarg_info "header" "Helper script for ogr2ogr file conversion"
 cmdarg_info "author" "Simon Templer <simon@wetransform.to>"
 cmdarg_info "copyright" "(C) 2016 wetransform GmbH"
 cmdarg 'i:' 'in' 'Source file location'
-cmdarg 'n?' 'source-name' 'If input is a URL, provide a name for the downloaded file'
+cmdarg 'n?' 'source-name' 'If input is a URL, provide a name for the downloaded file, if the format detection relies on the file extension'
 cmdarg 'o:' 'out' 'Path to target file'
 cmdarg 'f:' 'target-format' 'OGR target format'
 cmdarg 's?' 'source-srs' 'Override source SRS'
@@ -24,7 +24,10 @@ if [[ $source_loc =~ $web_regex ]]
 then
   # download locally
   source_file=${cmdarg_cfg['source-name']}
-  if [ -z "$source_file" ]; then echo "ERROR: Source file name must be set if file is downloaded from a URL"; exit 1; fi
+  if [ -z "$source_file" ]; then
+    # as fallback use filename w/o extension
+    source_file="convert-in"
+  fi
   mkdir "${DATA_DIR}/source" || true
   echo "Downloading file..."
   curl $source_loc > "${DATA_DIR}/source/${source_file}"
