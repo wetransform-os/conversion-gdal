@@ -56,7 +56,7 @@ if [ "$source_mime" == "application/zip" ]; then
 fi
 
 # build ogr2ogr comman
-convert_cmd="ogr2ogr"
+convert_cmd="time ogr2ogr"
 
 source_srs=${cmdarg_cfg['source-srs']}
 target_srs=${cmdarg_cfg['target-srs']}
