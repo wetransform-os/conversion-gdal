@@ -31,7 +31,7 @@ then
   fi
   mkdir "${DATA_DIR}/source" || true
   echo "Downloading file..."
-  curl $source_loc > "${DATA_DIR}/source/${source_file}"
+  curl -L $source_loc > "${DATA_DIR}/source/${source_file}"
   rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Error downloading source file"; exit $rc; fi
   # use downloaded file as new source
   source_loc="${DATA_DIR}/source/${source_file}"
