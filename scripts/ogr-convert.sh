@@ -52,8 +52,21 @@ if [ "$source_mime" == "application/zip" ]; then
   echo "Source file is a ZIP file - extracting..."
   mkdir "${DATA_DIR}/source-zip" || true
   unzip "$source_loc" -d "${DATA_DIR}/source-zip"
-  # use extracted content as new source
-  source_loc="${DATA_DIR}/source-zip"
+
+  # count extracted files
+  archive_file_count=$(ls -1 "${DATA_DIR}/source-zip/" | wc -l)
+
+  if [ $archive_file_count -eq 1 ]; then
+    # single file -> use as new source
+    extracted_file=$(ls -1 "${DATA_DIR}/source-zip/")
+    source_loc="${DATA_DIR}/source-zip/$extracted_file"
+  else
+    # multiple files
+    # use extracted folder as new source
+    source_loc="${DATA_DIR}/source-zip"
+  fi
+
+  echo "New source is ${source_loc}"
 fi
 
 # create target directory
