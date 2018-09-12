@@ -5,10 +5,9 @@ MAINTAINER Simon Templer <simon@wetransform.to>
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VCS_URL
-LABEL org.label-schema.build-date=$BUILD_DATE \
-  org.label-schema.vcs-url=$VCS_URL \
-  org.label-schema.vcs-ref=$VCS_REF \
-  org.label-schema.schema-version="1.0.0-rc1"
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+  org.opencontainers.image.source=$VCS_URL \
+  org.opencontainers.image.revision=$VCS_REF
 
 USER root
 
