@@ -1,6 +1,15 @@
 FROM stempler/gdal:2.1.0
 MAINTAINER Simon Templer <simon@wetransform.to>
 
+# add build info - see hooks/build and http://label-schema.org/
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VCS_URL
+LABEL org.label-schema.build-date=$BUILD_DATE \
+  org.label-schema.vcs-url=$VCS_URL \
+  org.label-schema.vcs-ref=$VCS_REF \
+  org.label-schema.schema-version="1.0.0-rc1"
+
 USER root
 
 # data directory - not using the base images volume because then the permissions cannot be adapted

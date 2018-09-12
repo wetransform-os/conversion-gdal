@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# see https://medium.com/microscaling-systems/labelling-automated-builds-on-docker-hub-f3d073fb8e1
+# and https://docs.docker.com/docker-cloud/builds/advanced/#override-build-test-or-push-commands
+
+# $IMAGE_NAME var is injected into the build so the tag is correct.
+
+echo "Build hook running"
+docker build \
+  --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+  --build-arg VCS_REF=`git rev-parse HEAD` \
+  --build-arg VCS_URL=`git ls-remote --get-url origin` \
+  -t $IMAGE_NAME .
+
+# Other options for getting VCS URL:
+# git remote get-url origin # seems to be not available on Docker Hub
+# git config --get remote.origin.url
