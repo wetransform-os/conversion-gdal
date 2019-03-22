@@ -9,9 +9,10 @@ cmdarg_info "author" "Simon Templer <simon@wetransform.to>"
 cmdarg_info "copyright" "(C) 2019 wetransform GmbH"
 cmdarg 'i:' 'source' 'Source file location (http/https URL or local file path)'
 cmdarg 'n?' 'source-name' 'If input is a URL, provide a name for the downloaded file, if the format detection relies on the file extension'
+cmdarg 'w?' 'world' 'World file information as string, values separated by semicolons'
 cmdarg 'd?' 'target-dir' 'Target directory where to put files'
 cmdarg 'o:' 'target-name' 'The main target file name (file name only)'
-cmdarg 'f?' 'target-format' 'GDAL target format'
+cmdarg 'f:' 'target-format' 'GDAL target format'
 cmdarg 'a?' 'args' 'Custom arguments'
 cmdarg_parse "$@"
 
@@ -69,6 +70,21 @@ if [ "$source_mime" == "application/zip" ]; then
   echo "New source is ${source_loc}"
 fi
 
+# Create world file, if applicable
+world=${cmdarg_cfg['world']}
+if [ -n "$world" ]; then
+  # create world file
+  echo "Creating world file from parameter..."
+  # source location w/o extension
+  worldfile_loc="$(<<< "${source_loc}" sed -r 's/^(.*)\..*/\1/')"
+  # write semicolon separated world information to file
+  while IFS=';' read -ra ARR; do
+    printf "%s\n" "${ARR[@]}" > "${worldfile_loc}.wld"
+  done <<< "$world"
+fi
+
+gdalinfo -noct $source_loc
+
 # create target directory
 target_dir=${cmdarg_cfg['target-dir']}
 if [ -z "$target_dir" ]; then
@@ -95,3 +111,5 @@ convert_cmd="$convert_cmd -of \"$target_format\" \"$source_loc\" \"$target_loc\"
 echo "Executing conversion..."
 eval $convert_cmd
 rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Conversion failed"; exit $rc; else echo "Conversion successful"; fi
+
+gdalinfo -noct $target_loc
