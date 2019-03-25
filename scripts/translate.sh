@@ -81,6 +81,8 @@ if [ -n "$world" ]; then
   while IFS=';' read -ra ARR; do
     printf "%s\n" "${ARR[@]}" > "${worldfile_loc}.wld"
   done <<< "$world"
+  echo "World file:"
+  cat "${worldfile_loc}.wld"
 fi
 
 gdalinfo -noct $source_loc
