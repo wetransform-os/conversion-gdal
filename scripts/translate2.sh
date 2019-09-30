@@ -141,20 +141,20 @@ if [ -n "$custom_warp_args" ]; then
 fi
 
 # test if file is has no ALPHA but NODATA (better do it with -json and jq?)
-gdalinfo -noct $target_loc | grep NODATA
+gdalinfo -noct $target_loc | grep "NoData Value"
 rc=$?
 if [ $rc -ne 0 ]; then
-  echo "No NODATA detected in target file"
+  echo "No NoData value detected in target file"
 else
   # NODATA found
-  gdalinfo -noct $target_loc | grep ALPHA
+  gdalinfo -noct $target_loc | grep Alpha
   rc=$?
   if [ $rc -ne 0 ]; then
     # No ALPHA found -> try to convert NODATA to ALPHA
     warp_args="$warp_args -dstalpha"
   else
     # ALPHA found -> do nothing
-    echo "File already has ALPHA"
+    echo "File already has Alpha channel"
   fi
 fi
 
