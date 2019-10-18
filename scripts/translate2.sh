@@ -151,7 +151,7 @@ else
   rc=$?
   if [ $rc -ne 0 ]; then
     # No ALPHA found -> try to convert NODATA to ALPHA
-    warp_args="$warp_args -dstalpha"
+    warp_args="$warp_args -wo \"UNIFIED_SRC_NODATA=YES\" -dstalpha"
   else
     # ALPHA found -> do nothing
     echo "File already has Alpha channel"
