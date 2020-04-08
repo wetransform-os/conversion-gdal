@@ -96,6 +96,48 @@ if [ -z "$target_dir" ]; then
 fi
 mkdir -p $target_dir || true
 
+# store JSON info for further processing
+info_json="$target_dir/source-info.json"
+gdalinfo -json -noct $source_loc > "$info_json"
+
+# file name w/ extension
+org_file_name=$(basename -- $source_loc)
+
+# detect case of grayscale single band file
+BANDS=$(cat "$info_json" | jq '.bands | length')
+if [ "$BANDS" == "1" ] || [ "$BANDS" == "2" ]; then
+  echo "File only has one or two bands"
+  BAND_1_COLOR=$(cat "$info_json" | jq '.bands[0].colorInterpretation')
+  if [ "$BAND_1_COLOR" == "\"Gray\"" ]; then
+    echo "First band is Grayscale"
+
+    # if there is only one band -> try to convert to gray + alpha
+    if [ "$BANDS" == "1" ]; then
+      ba_new_source="$target_dir/single-band-alpha-$org_file_name"
+      ba_cmd="gdalwarp -wo \"UNIFIED_SRC_NODATA=YES\" -dstalpha \"$source_loc\" \"$ba_new_source\""
+      eval $ba_cmd
+      rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Trying to add alpha channel to single band file failed"; exit $rc;
+      else
+        echo "Added alpha to single band file";
+        source_loc=$ba_new_source
+      fi
+    fi
+
+    # convert Grey + Alpha image to RGBA
+    ba_new_source="$target_dir/grey-rbga-$org_file_name"
+    ba_cmd="gdal_translate -b 1 -b 1 -b 1 -b 2 -ot \"Byte\" -co PHOTOMETRIC=RGB \"$source_loc\" \"$ba_new_source\""
+    eval $ba_cmd
+    rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Trying to convert greyscale+alpha to RGBA"; exit $rc;
+    else
+      echo "Converted grayscale image to RGBA";
+      source_loc=$ba_new_source
+    fi
+  fi
+fi
+
+# cleanup
+rm "$info_json" || true
+
 # build gdal_translate comman
 # see https://www.gdal.org/gdal_translate.html
 convert_cmd="time gdal_translate"
