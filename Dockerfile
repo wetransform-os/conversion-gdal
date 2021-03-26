@@ -1,4 +1,4 @@
-FROM stempler/gdal:2.1.0
+FROM osgeo/gdal:ubuntu-small-3.2.2
 MAINTAINER Simon Templer <simon@wetransform.to>
 
 # add build info - see hooks/build and http://label-schema.org/
@@ -16,7 +16,7 @@ ENV DATA_DIR /opt/data
 
 # Install needed utilities and setup folders
 RUN apt-get update -y && \
-  apt-get install -y zip unzip curl jq && \
+  apt-get install -y zip unzip curl jq file && \
   apt-get autoremove -y && \
   apt-get clean && \
   mkdir -p /opt/convert && \
