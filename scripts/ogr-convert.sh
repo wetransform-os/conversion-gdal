@@ -101,6 +101,11 @@ target_loc="$target_dir/${cmdarg_cfg['target-name']}"
 target_format=${cmdarg_cfg['target-format']}
 convert_cmd="$convert_cmd -f \"$target_format\" \"$target_loc\" \"$source_loc\""
 
+if [ "$target_format" == "GML" ]; then
+  # special options for GML target format
+  convert_cmd="$convert_cmd -dsco FORMAT=GML3.2 -dsco SRSNAME_FORMAT=OGC_URL -dsco PREFIX=hc -dsco TARGET_NAMESPACE=http://wetransform.to/hale-connect/converter/gml"
+fi
+
 # run
 echo "Executing conversion..."
 eval $convert_cmd
