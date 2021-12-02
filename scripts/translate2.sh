@@ -37,6 +37,9 @@ then
   rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Error downloading source file"; exit $rc; fi
   # use downloaded file as new source
   source_loc="${DATA_DIR}/source/${source_file}"
+else
+  # strip file protocol (for Argo conversions)
+  source_loc="${source_loc#file:}"
 fi
 
 # test if source exists
