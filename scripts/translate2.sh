@@ -215,4 +215,9 @@ else
   echo "No post-processing required"
 fi
 
+# generate overviews using gdaladdo - https://gdal.org/programs/gdaladdo.html
+overview_cmd="time gdaladdo -r bilinear -minsize 256 $target_loc"
+eval $overview_cmd
+rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Adding overviews failed"; exit $rc; else echo "Adding overviews successful"; fi
+
 gdalinfo -noct $target_loc
