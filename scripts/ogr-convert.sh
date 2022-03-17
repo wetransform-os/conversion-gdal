@@ -14,6 +14,7 @@ cmdarg 'o:' 'target-name' 'The main target file name (file name only)'
 cmdarg 'f:' 'target-format' 'OGR target format'
 cmdarg 's?' 'source-srs' 'Override source SRS'
 cmdarg 't?' 'target-srs' 'Provide target SRS to convert to'
+cmdarg 'a?' 'args' 'Custom arguments'
 cmdarg_parse "$@"
 
 web_regex='^(https?)://.+$'
@@ -79,7 +80,7 @@ if [ -z "$target_dir" ]; then
 fi
 mkdir -p $target_dir || true
 
-# build ogr2ogr comman
+# build ogr2ogr command
 convert_cmd="time ogr2ogr"
 
 source_srs=${cmdarg_cfg['source-srs']}
@@ -104,7 +105,12 @@ target_loc="$target_dir/${cmdarg_cfg['target-name']}"
 target_format=${cmdarg_cfg['target-format']}
 convert_cmd="$convert_cmd -f \"$target_format\" \"$target_loc\" \"$source_loc\""
 
-if [ "$target_format" == "GML" ]; then
+custom_args=${cmdarg_cfg['args']}
+
+if [ -n "$custom_args" ]; then
+  # add custom arguments
+  convert_cmd="$convert_cmd $custom_args"
+elif [ "$target_format" == "GML" ]; then
   # special options for GML target format
   convert_cmd="$convert_cmd -dsco FORMAT=GML3.2 -dsco SRSNAME_FORMAT=OGC_URL -dsco PREFIX=hc -dsco TARGET_NAMESPACE=http://wetransform.to/hale-connect/converter/gml"
 fi
