@@ -113,6 +113,12 @@ if [ -n "$custom_args" ]; then
 elif [ "$target_format" == "GML" ]; then
   # special options for GML target format
   convert_cmd="$convert_cmd -dsco FORMAT=GML3.2 -dsco SRSNAME_FORMAT=OGC_URL -dsco PREFIX=hc -dsco TARGET_NAMESPACE=http://wetransform.to/hale-connect/converter/gml"
+elif [ "$target_format" == "GPKG" ]; then
+  # special options for GPKG target format
+
+  # -forceNullable: allow creation w/o GML IDs when converted from GML
+  # not added as a general option because for instance not supported by all drivers (e.g. GMLAS driver)
+  convert_cmd="$convert_cmd -forceNullable"
 fi
 
 # run
