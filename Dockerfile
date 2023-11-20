@@ -1,5 +1,7 @@
-FROM osgeo/gdal:ubuntu-small-3.2.2
+FROM ghcr.io/osgeo/gdal:ubuntu-small-3.8.0
 MAINTAINER Simon Templer <simon@wetransform.to>
+
+# see https://github.com/OSGeo/gdal/pkgs/container/gdal
 
 # add build info - see hooks/build and http://label-schema.org/
 ARG BUILD_DATE
