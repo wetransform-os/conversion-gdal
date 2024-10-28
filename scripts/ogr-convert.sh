@@ -94,7 +94,17 @@ if [ -n "$source_srs" ]; then
     # no target srs, but if s_srs is provided, t_srs must be as well
     target_srs=$source_srs
   fi
+else
+  # Extract driverShortName
+  driverShortName=$(ogrinfo -json $source_loc | jq -r '.driverShortName')
+  echo "Driver Short Name: $driverShortName"
+  # Check if driverShortName is GML and source_srs is not set
+  if [ "$driverShortName" == "GML" ]; then
+    echo "GML driver detected and no source SRS provided, setting FORCE_SRS_DETECTION=YES"
+    convert_cmd="$convert_cmd -oo FORCE_SRS_DETECTION=YES"
+  fi
 fi
+
 if [ -n "$target_srs" ]; then
   # target srs is provided
   # add as parameter
@@ -123,5 +133,6 @@ fi
 
 # run
 echo "Executing conversion..."
+echo "Command: $convert_cmd"
 eval $convert_cmd
 rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Conversion failed"; exit $rc; else echo "Conversion successful"; fi

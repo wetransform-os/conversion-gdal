@@ -12,6 +12,12 @@ The default command prints the script usage.
 Example calls
 -------------
 
+Build docker image after changes using command:
+
+```
+docker build -t wetransform/conversion-gdal:latest .
+```
+
 Convert remote file, result is stored in internal container volume:
 
 ```
@@ -25,3 +31,9 @@ docker run -it --user=$(id -u):$(id -g) -v $(pwd):/data wetransform/conversion-g
 ```
 
 Similarly, files from mounted volumes can be converted as well, by providing a file path resolvable in the container instead of a remote (http/https) location.
+
+Example to mount a volume and run docker image:
+
+```
+docker run -it -v <local_path_to_folder_to_be_mounted>:/data wetransform/conversion-gdal:latest ./ogr-convert.sh --source /data/<example.gml> --target-dir /data/target --target-name test.shp -f "ESRI Shapefile"
+```
