@@ -1,4 +1,4 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-small-3.8.0
+FROM ghcr.io/osgeo/gdal:ubuntu-small-3.10.1
 MAINTAINER Simon Templer <simon@wetransform.to>
 
 # see https://github.com/OSGeo/gdal/pkgs/container/gdal
