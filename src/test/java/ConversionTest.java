@@ -29,8 +29,16 @@ public class ConversionTest {
   }
 
   @Test
-  public void testConvertShapeToGeojson() throws UnsupportedOperationException, IOException, InterruptedException {
+  public void testConvertZippedShapeToGeojson() throws UnsupportedOperationException, IOException, InterruptedException {
     runConversion("shapefile_ikg.zip", "ikg.json", "GeoJSON", file -> {
+      // simple verification by checking the number of features
+      JsonHelper.verifyGeoJsonFeatureCollection(file, 14);
+    });
+  }
+
+  @Test
+  public void testConvertNestedZippedShapeToGeojson() throws UnsupportedOperationException, IOException, InterruptedException {
+    runConversion("nested_shapefile_ikg.zip", "ikg.json", "GeoJSON", file -> {
       // simple verification by checking the number of features
       JsonHelper.verifyGeoJsonFeatureCollection(file, 14);
     });
