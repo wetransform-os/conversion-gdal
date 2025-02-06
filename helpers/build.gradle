@@ -1,0 +1,12 @@
+plugins {
+  id 'java-library'
+  id 'groovy'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  api 'org.apache.groovy:groovy-json:4.0.25'
+}
