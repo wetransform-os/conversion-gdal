@@ -28,6 +28,14 @@ public class ConversionTest {
     });
   }
 
+  @Test
+  public void testConvertShapeToGeojson() throws UnsupportedOperationException, IOException, InterruptedException {
+    runConversion("shapefile_ikg.zip", "ikg.json", "GeoJSON", file -> {
+      // simple verification by checking the number of features
+      JsonHelper.verifyGeoJsonFeatureCollection(file, 14);
+    });
+  }
+
   private void runConversion(String sourceClasspathResource, String targetName, String targetFormat, Consumer<File> verify) throws UnsupportedOperationException, IOException, InterruptedException {
     // extract file name from classpath resource
     String sourceFileName = sourceClasspathResource.substring(sourceClasspathResource.lastIndexOf("/") + 1);
@@ -52,9 +60,9 @@ public class ConversionTest {
 
         conversionContainer.start();
 
-        conversionContainer.followOutput(outputFrame -> {
-          System.out.print(outputFrame.getUtf8String());
-        });
+//        conversionContainer.followOutput(outputFrame -> {
+//          System.out.print(outputFrame.getUtf8String());
+//        });
 
         // wait for container to finish
         while (conversionContainer.isRunning()) {
