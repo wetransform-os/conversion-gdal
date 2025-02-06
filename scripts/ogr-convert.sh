@@ -57,17 +57,36 @@ if [ "$source_mime" == "application/zip" ]; then
   mkdir "${DATA_DIR}/source-zip" || true
   unzip "$source_loc" -d "${DATA_DIR}/source-zip"
 
-  # count extracted files
-  archive_file_count=$(ls -1 "${DATA_DIR}/source-zip/" | wc -l)
-
-  if [ $archive_file_count -eq 1 ]; then
-    # single file -> use as new source
-    extracted_file=$(ls -1 "${DATA_DIR}/source-zip/")
-    source_loc="${DATA_DIR}/source-zip/$extracted_file"
-  else
-    # multiple files
+  # Handle case of nested Zip files (hale-connect Shapefile original source for Atom feed)
+  # if all files within extracted folder are .zip files, extract them
+  if [ "$(find "${DATA_DIR}/source-zip" -type f ! -name '*.zip' | wc -l)" -eq 0 ]; then
+    echo "Detected only .zip files in extracted files, extracting nested ZIP files"
     # use extracted folder as new source
-    source_loc="${DATA_DIR}/source-zip"
+    source_loc="${DATA_DIR}/source-zip-nested"
+    mkdir "${source_loc}" || true
+
+    for file in ${DATA_DIR}/source-zip/*.zip; do
+      if [ -f "$file" ]; then
+        echo "Extracting nested ZIP file $file"
+        unzip "$file" -d "${source_loc}"
+        rm "$file"
+      fi
+    done
+  else
+    # Extracted files used as source data
+
+    # count extracted files
+    archive_file_count=$(ls -1 "${DATA_DIR}/source-zip/" | wc -l)
+
+    if [ $archive_file_count -eq 1 ]; then
+      # single file -> use as new source
+      extracted_file=$(ls -1 "${DATA_DIR}/source-zip/")
+      source_loc="${DATA_DIR}/source-zip/$extracted_file"
+    else
+      # multiple files
+      # use extracted folder as new source
+      source_loc="${DATA_DIR}/source-zip"
+    fi
   fi
 
   echo "New source is ${source_loc}"
