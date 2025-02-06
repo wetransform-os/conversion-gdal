@@ -1,0 +1,132 @@
+---
+#
+# PLEASE NOTE: Managed workflow - do not change manually
+#
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        type: boolean
+        description: "Dry-Run"
+        default: false
+
+concurrency:
+  # only run one publishing at a time to avoid conflicts
+  group: publish-${{ github.ref }}
+
+env:
+  # renovate: datasource=npm depName=@semantic-release/changelog
+  SEMANTIC_RELEASE_CHANGELOG_VERSION: 6.0.3
+
+  # renovate: datasource=npm depName=@semantic-release/git
+  SEMANTIC_RELEASE_GIT_VERSION: 10.0.1
+
+  # renovate: datasource=npm depName=conventional-changelog-conventionalcommits
+  CONVENTIONAL_CHANGELOG_CONVENTIONALCOMMITS_VERSION: 8.0.0
+
+jobs:
+  release:
+    # Only on main repository (don't release on forks)
+    if: github.repository_owner == 'wetransform-os'
+
+    name: Release
+    runs-on: ubuntu-latest
+
+    outputs:
+      release-published: ${{ steps.release.outputs.new_release_published }}
+      release-version: ${{ steps.release.outputs.new_release_version }}
+
+    steps:
+      - name: Determine app token for release
+        uses: actions/create-github-app-token@136412a57a7081aa63c935a2cc2918f76c34f514 # v1.11.2
+        id: app-token
+        with:
+          app-id: ${{ secrets.WE_RELEASE_GITHUB_APP_ID }}
+          private-key: ${{ secrets.WE_RELEASE_GITHUB_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          # fetch-depth 0 is required to fetch all tags (and to determine the version based on tags)
+          fetch-depth: 0
+
+      - name: Create release configuration file
+        if: ${{ hashFiles('.releaserc.yml') == '' }}
+        shell: bash
+        # TODO rather use a template?
+        run: |
+          cat <<EOF > .releaserc.yml
+          ---
+          branches: ${{ github.head_ref || github.ref_name }}
+
+          plugins:
+            - - "@semantic-release/commit-analyzer"
+              # see https://github.com/semantic-release/commit-analyzer?tab=readme-ov-file#options
+              - preset: conventionalcommits
+            - - "@semantic-release/release-notes-generator"
+              # see https://github.com/semantic-release/release-notes-generator?tab=readme-ov-file#options
+              - preset: conventionalcommits
+                presetConfig:
+                  issuePrefixes: ['ING-', 'WGS-', 'SVC-']
+                  issueUrlFormat: 'https://wetransform.atlassian.net/browse/{{prefix}}{{id}}'
+                parserOpts:
+                  # https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser#referenceactions
+                  # set to null to reference an issue without action (but will still show it "closes" the issue in the changelog)
+                  # referenceActions: null
+            - "@semantic-release/changelog"
+            - - "@semantic-release/git"
+              - assets:
+                  - CHANGELOG.md
+            - "@semantic-release/github"
+          EOF
+
+      - name: Install NodeJs
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        with:
+          node-version: 20
+
+      - name: Release
+        id: release
+        uses: cycjimmy/semantic-release-action@b1b432f13acb7768e0c8efdec416d363a57546f2 # v4.1.1
+        env:
+          # Permissions needed
+          #   contents: write
+          #   issues: write
+          #   pull-requests: write
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GIT_AUTHOR_NAME: wetransform Bot
+          GIT_AUTHOR_EMAIL: 113353961+wetransformer@users.noreply.github.com
+          GIT_COMMITTER_NAME: wetransform Bot
+          GIT_COMMITTER_EMAIL: 113353961+wetransformer@users.noreply.github.com
+          RUNNER_DEBUG: 1
+        with:
+          dry_run: ${{ inputs.dryRun }}
+          semantic_version: 24.2.1
+
+          extra_plugins:
+            "@semantic-release/changelog@\
+            ${{ env.SEMANTIC_RELEASE_CHANGELOG_VERSION }} \
+            @semantic-release/git@\
+            ${{ env.SEMANTIC_RELEASE_GIT_VERSION }} \
+            conventional-changelog-conventionalcommits@\
+            ${{ env.CONVENTIONAL_CHANGELOG_CONVENTIONALCOMMITS_VERSION }} \
+            "
+
+  # Note: This does not push "latest" tag, only the version tag (it is assumed that latest is pushed before the release with the same content)
+  push:
+    name: Build and push released Docker image
+    needs: [release]
+    if: ${{ !inputs.dryRun && needs.release.outputs.release-published != 'false' }}
+
+    uses: wetransform/gha-workflows/.github/workflows/dockerfile-publish.yml@ea94f03339afbdd8770e446d3f000c2d366a6fc1 # v3.4.1
+    with:
+      checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
+      tag: ${{needs.release.outputs.release-version}}
+      image: wetransform/conversion-gdal
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      SLACK_NOTIFICATIONS_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
