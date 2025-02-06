@@ -1,0 +1,12 @@
+---
+# Repository configuration for wetransform managed repositories
+
+# Reference presets that should apply to this repository
+presets:
+  - dockerfile
+  - renovate
+  - workflows-default
+
+# List of custom required checks
+required_checks:
+  - test / check / run
