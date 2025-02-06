@@ -13,3 +13,8 @@ trim_trailing_whitespace = true
 [*.sh]
 indent_style = space
 indent_size = 2
+
+# 2 space indentation
+[{*.gradle,*.java,*.groovy}]
+indent_style = space
+indent_size = 2
