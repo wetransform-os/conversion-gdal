@@ -1,5 +1,4 @@
 FROM ghcr.io/osgeo/gdal:ubuntu-small-3.10.1
-MAINTAINER Simon Templer <simon@wetransform.to>
 
 # see https://github.com/OSGeo/gdal/pkgs/container/gdal
 
@@ -14,7 +13,7 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 USER root
 
 # data directory - not using the base images volume because then the permissions cannot be adapted
-ENV DATA_DIR /opt/data
+ENV DATA_DIR=/opt/data
 
 # Install needed utilities and setup folders
 RUN apt-get update -y && \
@@ -26,7 +25,7 @@ RUN apt-get update -y && \
 
 # Add bash script helper
 #ADD https://github.com/akesterson/cmdarg/raw/977badef4b6eb215c4dc970db9126387f2c9f428/cmdarg.sh /opt/convert/cmdarg.sh
-ENV CMD_ARG_VERSION 977badef4b6eb215c4dc970db9126387f2c9f428
+ENV CMD_ARG_VERSION=977badef4b6eb215c4dc970db9126387f2c9f428
 RUN curl -L "https://github.com/akesterson/cmdarg/raw/${CMD_ARG_VERSION}/cmdarg.sh" > /opt/convert/cmdarg.sh
 
 # Add scripts
@@ -42,4 +41,4 @@ USER nobody
 VOLUME /opt/data
 
 WORKDIR /opt/convert
-CMD ./ogr-convert.sh --help
+CMD ["./ogr-convert.sh", "--help"]
