@@ -104,7 +104,7 @@ jobs:
           RUNNER_DEBUG: 1
         with:
           dry_run: ${{ inputs.dryRun }}
-          semantic_version: 24.2.1
+          semantic_version: 24.2.2
 
           extra_plugins:
             "@semantic-release/changelog@\
