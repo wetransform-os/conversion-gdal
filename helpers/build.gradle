@@ -8,5 +8,5 @@ repositories {
 }
 
 dependencies {
-  api 'org.apache.groovy:groovy-json:4.0.25'
+  api 'org.apache.groovy:groovy-json:4.0.26'
 }
