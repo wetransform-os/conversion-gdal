@@ -79,7 +79,11 @@ jobs:
         env:
           EDITOR: 'true' # to automatically complete the interactive rebase
         run: |
+          # determine and print PR base ref
           BASE_REF=$(gh pr view ${{ github.event.issue.number }} --json baseRefName -q .baseRefName)
+          echo "Identified PR base ref: $BASE_REF"
+          # print current commit
+          git log -1 --oneline
           git fetch origin
           git rebase -i --autosquash origin/$BASE_REF
 
