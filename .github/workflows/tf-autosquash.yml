@@ -90,7 +90,10 @@ jobs:
           git fetch origin
           echo "Base ref commit:"
           git log -1 --oneline "origin/$BASE_REF"
-          git rebase -i --autosquash "origin/$BASE_REF"
+          BASE_COMMIT=$(git rev-parse "origin/$BASE_REF")
+          echo "Base commit: $BASE_COMMIT"
+          # git rebase -i --autosquash "origin/$BASE_REF"
+          git rebase -i --autosquash $BASE_COMMIT
 
       - name: Push changes
         run: |
