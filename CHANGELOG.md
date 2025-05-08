@@ -1,3 +1,22 @@
+## [1.1.0](https://github.com/wetransform-os/conversion-gdal/compare/v1.0.0...v1.1.0) (2025-05-08)
+
+### Features
+
+* support extracting source files in nested Zip files ([87f6c50](https://github.com/wetransform-os/conversion-gdal/commit/87f6c503ea9e2182bda00d913a3acba6d85d6c76)), closes [ING-4619](https://wetransform.atlassian.net/browse/ING-4619)
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.groovy:groovy-json to v4.0.26 ([22657c6](https://github.com/wetransform-os/conversion-gdal/commit/22657c6a244bb23827afc6c7836688d10bddddc2))
+* **deps:** update dependency org.junit.jupiter:junit-jupiter to v5.12.0 ([6ad1bf8](https://github.com/wetransform-os/conversion-gdal/commit/6ad1bf8d4e1058387573fd371c8f8a8d62a21ac0))
+* **deps:** update dependency org.junit.jupiter:junit-jupiter to v5.12.1 ([1568ee6](https://github.com/wetransform-os/conversion-gdal/commit/1568ee6ac98de2f0c5c25b1e672307729b7e2ea8))
+* **deps:** update dependency org.junit.jupiter:junit-jupiter to v5.12.2 ([ac3039b](https://github.com/wetransform-os/conversion-gdal/commit/ac3039b9f2e0f04727755cc90c6bff775f158ac8))
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.17 ([ed1ed29](https://github.com/wetransform-os/conversion-gdal/commit/ed1ed296321717c7a1f4e37039987e53eec34801))
+* **deps:** update dependency org.testcontainers:junit-jupiter to v1.20.5 ([6c9fa1a](https://github.com/wetransform-os/conversion-gdal/commit/6c9fa1a07a1073cb77df446239d6ba6b4ae541b1))
+* **deps:** update dependency org.testcontainers:junit-jupiter to v1.20.6 ([00877c5](https://github.com/wetransform-os/conversion-gdal/commit/00877c5b80a275ffd3f6c5e8365ac1e2339085d2))
+* **deps:** update dependency org.testcontainers:junit-jupiter to v1.21.0 ([68647c2](https://github.com/wetransform-os/conversion-gdal/commit/68647c210fd4be027e1491dd875c2b01072866ce))
+* **deps:** update ghcr.io/osgeo/gdal docker tag to ubuntu-small-3.10.2 ([6e0d87f](https://github.com/wetransform-os/conversion-gdal/commit/6e0d87fa4c2544fe091a4f87f95878fae010422a))
+* **deps:** update ghcr.io/osgeo/gdal docker tag to ubuntu-small-3.10.3 ([e8c9f65](https://github.com/wetransform-os/conversion-gdal/commit/e8c9f658cf8d96d6cb80c1c25d5c8e86be91d64f))
+
 ## 1.0.0 (2025-02-06)
 
 ### Features
