@@ -1,6 +1,16 @@
 plugins {
   id 'java-library'
   id 'groovy'
+  id 'java'
+  id 'to.wetransform.conventions' version '2.1.0'
+}
+
+wetransform {
+  setup {
+    publish {
+      enableMaven = false
+    }
+  }
 }
 
 repositories {
@@ -8,5 +18,5 @@ repositories {
 }
 
 dependencies {
-  api 'org.apache.groovy:groovy-json:4.0.26'
+  api testLibs.groovy.json
 }
