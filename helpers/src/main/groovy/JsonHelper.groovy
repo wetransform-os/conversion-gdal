@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2025 wetransform GmbH
+ * All rights reserved.
+ */
 import groovy.json.JsonSlurper
 
 class JsonHelper {
@@ -8,5 +12,4 @@ class JsonHelper {
     def size = json.features.size()
     assert size == expectedFeatures
   }
-
 }
