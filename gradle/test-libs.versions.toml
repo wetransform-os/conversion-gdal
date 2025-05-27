@@ -1,0 +1,14 @@
+[versions]
+junit = "5.12.2"
+testcontainers = "1.21.0"
+slf4j = "2.0.17"
+
+[libraries]
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+groovy-json = { module = "org.apache.groovy:groovy-json", version = "4.0.26" }

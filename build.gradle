@@ -1,5 +1,10 @@
 plugins {
   id 'java'
+  id 'to.wetransform.conventions' version '2.1.0'
+}
+
+wetransform {
+  setup()
 }
 
 repositories {
@@ -9,14 +14,14 @@ repositories {
 dependencies {
   testImplementation project(':helpers')
 
-  testImplementation 'org.testcontainers:junit-jupiter:1.21.0'
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
-  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+  testImplementation testLibs.junit.jupiter
+  testImplementation testLibs.testcontainers.junit
+  testRuntimeOnly testLibs.junit.platform.launcher
 
-  testImplementation 'org.slf4j:slf4j-simple:2.0.17'
+  testImplementation testLibs.slf4j.simple
 }
 
-task buildDockerImage(type: Exec) {
+tasks.register('buildDockerImage', Exec) {
   commandLine 'docker', 'build', '-t', 'wetransform/conversion-gdal:test', '.'
 }
 
