@@ -1,5 +1,5 @@
 [versions]
-junit = "5.13.0"
+junit = "5.13.1"
 testcontainers = "1.21.1"
 slf4j = "2.0.17"
 
