@@ -1,6 +1,6 @@
 [versions]
 junit = "5.13.1"
-testcontainers = "1.21.1"
+testcontainers = "1.21.2"
 slf4j = "2.0.17"
 
 [libraries]
