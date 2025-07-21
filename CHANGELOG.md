@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/wetransform-os/conversion-gdal/compare/v1.1.0...v1.1.1) (2025-07-21)
+
+### Bug Fixes
+
+* **deps:** update ghcr.io/osgeo/gdal docker tag to ubuntu-small-3.11.0 ([2c16f65](https://github.com/wetransform-os/conversion-gdal/commit/2c16f65b886ed6c87799685415c0ce6e9f760524))
+* **deps:** update ghcr.io/osgeo/gdal docker tag to ubuntu-small-3.11.3 ([8a5c4e8](https://github.com/wetransform-os/conversion-gdal/commit/8a5c4e89db13bf02ef0c692f57f9b54c70978bf3))
+
 ## [1.1.0](https://github.com/wetransform-os/conversion-gdal/compare/v1.0.0...v1.1.0) (2025-05-08)
 
 ### Features
