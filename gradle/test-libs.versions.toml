@@ -11,4 +11,4 @@ testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.re
 
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 
-groovy-json = { module = "org.apache.groovy:groovy-json", version = "4.0.27" }
+groovy-json = { module = "org.apache.groovy:groovy-json", version = "4.0.28" }
