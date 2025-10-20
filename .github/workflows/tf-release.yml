@@ -121,7 +121,7 @@ jobs:
     needs: [release]
     if: ${{ !inputs.dryRun && needs.release.outputs.release-published != 'false' }}
 
-    uses: wetransform/gha-workflows/.github/workflows/dockerfile-publish.yml@d013e58794766536ac0bb90fbda477a21ed9d4d0 # v3.7.0
+    uses: wetransform/gha-workflows/.github/workflows/dockerfile-publish.yml@7f8cab53bf0b02b6400307f8e3a9fb68dd648902 # v3.8.0
     with:
       checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
       tag: ${{needs.release.outputs.release-version}}
