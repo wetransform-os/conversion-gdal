@@ -57,10 +57,12 @@ jobs:
         if: ${{ hashFiles('.releaserc.yml') == '' }}
         shell: bash
         # TODO rather use a template?
+        env:
+          GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
         run: |
           cat <<EOF > .releaserc.yml
           ---
-          branches: ${{ github.head_ref || github.ref_name }}
+          branches: $GITHUB_REF_NAME
 
           plugins:
             - - "@semantic-release/commit-analyzer"
