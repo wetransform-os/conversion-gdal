@@ -1,4 +1,4 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-small-3.12.1
+FROM ghcr.io/osgeo/gdal:ubuntu-small-3.12.2
 
 # see https://github.com/OSGeo/gdal/pkgs/container/gdal
 
