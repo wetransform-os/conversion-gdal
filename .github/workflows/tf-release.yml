@@ -24,7 +24,7 @@ env:
   SEMANTIC_RELEASE_GIT_VERSION: 10.0.1
 
   # renovate: datasource=npm depName=conventional-changelog-conventionalcommits
-  CONVENTIONAL_CHANGELOG_CONVENTIONALCOMMITS_VERSION: 9.2.0
+  CONVENTIONAL_CHANGELOG_CONVENTIONALCOMMITS_VERSION: 9.3.0
 
 jobs:
   release:
@@ -86,7 +86,7 @@ jobs:
           EOF
 
       - name: Install NodeJs
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 24 # semantic-release 25 requires NodeJs 22 or 24
 
