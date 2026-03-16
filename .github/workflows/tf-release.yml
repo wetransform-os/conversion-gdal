@@ -41,7 +41,7 @@ jobs:
 
     steps:
       - name: Determine app token for release
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         id: app-token
         with:
           app-id: ${{ secrets.WE_RELEASE_GITHUB_APP_ID }}
@@ -124,7 +124,7 @@ jobs:
     needs: [release]
     if: ${{ !inputs.dryRun && needs.release.outputs.release-published != 'false' }}
 
-    uses: wetransform/gha-workflows/.github/workflows/dockerfile-publish.yml@11ac55c836e622b4a3c944e057f9067cfdc6ab11 # v4.1.1
+    uses: wetransform/gha-workflows/.github/workflows/dockerfile-publish.yml@6cf8743e1cdaff405473951cc6ad4eadaf2226cc # v4.1.2
     with:
       checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
       tag: ${{needs.release.outputs.release-version}}
