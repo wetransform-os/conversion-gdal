@@ -30,6 +30,7 @@ jobs:
   release:
     # Only on main repository (don't release on forks)
     if: github.repository_owner == 'wetransform-os'
+    timeout-minutes: 80
 
     name: Release
     runs-on: ubuntu-latest
