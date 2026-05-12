@@ -1,7 +1,7 @@
 [versions]
 junit = "6.0.3"
 testcontainers = "1.21.4"
-slf4j = "2.0.17"
+slf4j = "2.0.18"
 
 [libraries]
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
