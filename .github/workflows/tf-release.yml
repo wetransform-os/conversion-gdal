@@ -107,7 +107,7 @@ jobs:
           RUNNER_DEBUG: 1
         with:
           dry_run: ${{ inputs.dryRun }}
-          semantic_version: 25.0.8
+          semantic_version: 25.0.9
 
           extra_plugins:
             "@semantic-release/changelog@\
@@ -124,7 +124,7 @@ jobs:
     needs: [release]
     if: ${{ !inputs.dryRun && needs.release.outputs.release-published != 'false' }}
 
-    uses: wetransform/gha-workflows/.github/workflows/dockerfile-publish.yml@2563735dba59f6c566472e5259c166c146c2cacf # v4.3.1
+    uses: wetransform/gha-workflows/.github/workflows/dockerfile-publish.yml@7f7a6fb739699ce98b9e802074d194058f31fa6b # v4.4.0
     with:
       checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
       tag: ${{needs.release.outputs.release-version}}
