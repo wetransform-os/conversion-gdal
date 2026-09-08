@@ -118,7 +118,7 @@ if [ "$BANDS" == "1" ] || [ "$BANDS" == "2" ]; then
     if [ "$BANDS" == "1" ]; then
       ba_new_source="$target_dir/single-band-alpha-$org_file_name"
       eval rm $ba_new_source || true
-      ba_cmd="time gdalwarp -wo \"UNIFIED_SRC_NODATA=YES\" -dstalpha -co TILED=YES -co COMPRESS=LZW \"$source_loc\" \"$ba_new_source\""
+      ba_cmd="time gdalwarp -of \"GTiff\" -wo \"UNIFIED_SRC_NODATA=YES\" -dstalpha -co TILED=YES -co COMPRESS=LZW \"$source_loc\" \"$ba_new_source\""
       eval $ba_cmd
       rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Trying to add alpha channel to single band file failed"; exit $rc;
       else
@@ -130,7 +130,7 @@ if [ "$BANDS" == "1" ] || [ "$BANDS" == "2" ]; then
     # convert Grey + Alpha image to RGBA
     ba_new_source="$target_dir/grey-rbga-$org_file_name"
     eval rm $ba_new_source || true
-    ba_cmd="time gdal_translate -b 1 -b 1 -b 1 -b 2 -ot \"Byte\" -co PHOTOMETRIC=RGB -co TILED=YES -co COMPRESS=LZW \"$source_loc\" \"$ba_new_source\""
+    ba_cmd="time gdal_translate -of \"GTiff\" -b 1 -b 1 -b 1 -b 2 -ot \"Byte\" -co PHOTOMETRIC=RGB -co TILED=YES -co COMPRESS=LZW \"$source_loc\" \"$ba_new_source\""
     eval $ba_cmd
     rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Trying to convert greyscale+alpha to RGBA"; exit $rc;
     else
