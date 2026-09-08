@@ -8,8 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;
@@ -27,6 +29,7 @@ public class RasterConversionTest {
   // without a recognizable extension, which previously broke driver auto-detection
   // for translate2.sh's intermediate gdalwarp/gdal_translate steps.
   @Test
+  @Timeout(value = 2, unit = TimeUnit.MINUTES)
   public void testConvertSingleBandGrayscaleWithoutExtension()
     throws UnsupportedOperationException, IOException, InterruptedException {
     String sourceClasspathResource = "single-band-gray.tif";
