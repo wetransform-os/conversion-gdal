@@ -117,9 +117,8 @@ if [ "$BANDS" == "1" ] || [ "$BANDS" == "2" ]; then
     # if there is only one band -> try to convert to gray + alpha
     if [ "$BANDS" == "1" ]; then
       ba_new_source="$target_dir/single-band-alpha-$org_file_name"
-      eval rm $ba_new_source || true
-      ba_cmd="time gdalwarp -of \"GTiff\" -wo \"UNIFIED_SRC_NODATA=YES\" -dstalpha -co TILED=YES -co COMPRESS=LZW \"$source_loc\" \"$ba_new_source\""
-      eval $ba_cmd
+      rm -f "$ba_new_source" || true
+      time gdalwarp -of "GTiff" -wo "UNIFIED_SRC_NODATA=YES" -dstalpha -co TILED=YES -co COMPRESS=LZW "$source_loc" "$ba_new_source"
       rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Trying to add alpha channel to single band file failed"; exit $rc;
       else
         echo "Added alpha to single band file";
@@ -129,9 +128,8 @@ if [ "$BANDS" == "1" ] || [ "$BANDS" == "2" ]; then
 
     # convert Grey + Alpha image to RGBA
     ba_new_source="$target_dir/grey-rbga-$org_file_name"
-    eval rm $ba_new_source || true
-    ba_cmd="time gdal_translate -of \"GTiff\" -b 1 -b 1 -b 1 -b 2 -ot \"Byte\" -co PHOTOMETRIC=RGB -co TILED=YES -co COMPRESS=LZW \"$source_loc\" \"$ba_new_source\""
-    eval $ba_cmd
+    rm -f "$ba_new_source" || true
+    time gdal_translate -of "GTiff" -b 1 -b 1 -b 1 -b 2 -ot "Byte" -co PHOTOMETRIC=RGB -co TILED=YES -co COMPRESS=LZW "$source_loc" "$ba_new_source"
     rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Trying to convert greyscale+alpha to RGBA"; exit $rc;
     else
       echo "Converted grayscale image to RGBA";
@@ -179,12 +177,14 @@ if [ $rc -ne 0 ]; then echo "ERROR: Conversion failed"; exit $rc; else echo "Con
 gdalinfo -noct $target_loc
 
 # post-processing
-warp_args=""
+warp_args_arr=()
 custom_warp_args=${cmdarg_cfg['warp-args']}
 
 if [ -n "$custom_warp_args" ]; then
-  # add custom arguments
-  warp_args="$custom_warp_args"
+  # split into individual arguments, respecting quoting, without eval/re-parsing by a shell
+  while IFS= read -r -d '' arg; do
+    warp_args_arr+=("$arg")
+  done < <(xargs -r printf '%s\0' <<<"$custom_warp_args")
 fi
 
 # test if file is has no ALPHA but NODATA (better do it with -json and jq?)
@@ -198,19 +198,26 @@ else
   rc=$?
   if [ $rc -ne 0 ]; then
     # No ALPHA found -> try to convert NODATA to ALPHA
-    warp_args="$warp_args -wo \"UNIFIED_SRC_NODATA=YES\" -dstalpha"
+    warp_args_arr+=(-wo "UNIFIED_SRC_NODATA=YES" -dstalpha)
   else
     # ALPHA found -> do nothing
     echo "File already has Alpha channel"
   fi
 fi
 
-if [ -n "$warp_args" ]; then
+if [ ${#warp_args_arr[@]} -gt 0 ]; then
   # run post-processing
-  warp_cmd="time gdalwarp -of \"$target_format\" -co TILED=YES -co COMPRESS=LZW $warp_args $target_loc.tmp $target_loc"
-  warp_cmd="mv $target_loc $target_loc.tmp && $warp_cmd && rm $target_loc.tmp"
-  eval $warp_cmd
-  rc=$?; if [ $rc -ne 0 ]; then echo "ERROR: Post-processing failed"; exit $rc; else echo "Post-processing successful"; fi
+  mv "$target_loc" "$target_loc.tmp"
+  rc=$?
+  if [ $rc -eq 0 ]; then
+    time gdalwarp -of "$target_format" -co TILED=YES -co COMPRESS=LZW "${warp_args_arr[@]}" "$target_loc.tmp" "$target_loc"
+    rc=$?
+  fi
+  if [ $rc -eq 0 ]; then
+    rm -f "$target_loc.tmp"
+    rc=$?
+  fi
+  if [ $rc -ne 0 ]; then echo "ERROR: Post-processing failed"; exit $rc; else echo "Post-processing successful"; fi
 else
   echo "No post-processing required"
 fi
