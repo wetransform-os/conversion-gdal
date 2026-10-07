@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/wetransform-os/conversion-gdal/compare/v1.1.5...v1.1.6) (2026-10-07)
+
+### Bug Fixes
+
+* avoid eval for rm and gdalwarp in translate2.sh ([2e9090c](https://github.com/wetransform-os/conversion-gdal/commit/2e9090c98be7faf904f7d2b25fba913192fe288d))
+* fix driver auto-detection for single-band grayscale rasters ([316d472](https://github.com/wetransform-os/conversion-gdal/commit/316d4723e147bbb7325ee0569d1b63afc194ed97)), closes [ING-3390](https://wetransform.atlassian.net/browse/ING-3390)
+
 ## [1.1.5](https://github.com/wetransform-os/conversion-gdal/compare/v1.1.4...v1.1.5) (2026-09-04)
 
 ### Bug Fixes
